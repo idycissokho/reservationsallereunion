@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// RBAC
+// ─────────────────────────────────────────
+
+model Role {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  permissions RolePermission[]
+  users       User[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  action      String
+  subject     String
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+
+  @@unique([action, subject])
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// ─────────────────────────────────────────
+// USERS
+// ─────────────────────────────────────────
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  firstName    String
+  lastName     String
+  isActive     Boolean       @default(true)
+  roleId       String
+  role         Role          @relation(fields: [roleId], references: [id])
+  refreshToken String?
+  reservations Reservation[]
+  auditLogs    AuditLog[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// ROOMS
+// ─────────────────────────────────────────
+
+model Room {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  description  String?
+  capacity     Int
+  location     String?
+  isAvailable  Boolean       @default(true)
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@map("rooms")
+}
+
+// ─────────────────────────────────────────
+// RESERVATIONS
+// ─────────────────────────────────────────
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REJECTED
+}
+
+model Reservation {
+  id          String            @id @default(uuid())
+  title       String
+  reason      String
+  startTime   DateTime
+  endTime     DateTime
+  status      ReservationStatus @default(PENDING)
+  roomId      String
+  userId      String
+  room        Room              @relation(fields: [roomId], references: [id])
+  user        User              @relation(fields: [userId], references: [id])
+  cancelledAt DateTime?
+  cancelledBy String?
+  cancelReason String?
+  deletedAt   DateTime?
+  auditLogs   AuditLog[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("reservations")
+}
+
+// ─────────────────────────────────────────
+// AUDIT
+// ─────────────────────────────────────────
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  CANCEL
+  DELETE
+  LOGIN
+  LOGOUT
+}
+
+model AuditLog {
+  id            String      @id @default(uuid())
+  action        AuditAction
+  entity        String
+  entityId      String
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  reservationId String?
+  reservation   Reservation? @relation(fields: [reservationId], references: [id])
+  metadata      Json?
+  createdAt     DateTime    @default(now())
+
+  @@map("audit_logs")
+}
