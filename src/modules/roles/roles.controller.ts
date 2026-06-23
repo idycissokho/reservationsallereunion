@@ -58,7 +58,10 @@ export class RolesController {
   }
 
   @Put(':id/permissions')
-  assignPermissions(@Param('id') id: string, @Body() dto: AssignPermissionsDto) {
+  assignPermissions(
+    @Param('id') id: string,
+    @Body() dto: AssignPermissionsDto,
+  ) {
     return this.rolesService.assignPermissions(id, dto);
   }
 

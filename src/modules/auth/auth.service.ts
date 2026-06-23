@@ -7,7 +7,6 @@ import { PrismaService } from '@prisma/prisma.service';
 import { AuditAction } from '@prisma/client';
 import { LoginDto } from './dto';
 import { JwtPayload } from './interfaces';
-import { Role, User } from '@prisma/client';
 import { UserWithRole } from '@modules/users/interfaces';
 import { AuditService } from '@modules/audit/audit.service';
 
@@ -78,18 +77,23 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.getOrThrow<string>('accessSecret'),
-        expiresIn: this.configService.getOrThrow<StringValue>('accessExpiresIn'),
+        expiresIn:
+          this.configService.getOrThrow<StringValue>('accessExpiresIn'),
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.getOrThrow<string>('refreshSecret'),
-        expiresIn: this.configService.getOrThrow<StringValue>('refreshExpiresIn'),
+        expiresIn:
+          this.configService.getOrThrow<StringValue>('refreshExpiresIn'),
       }),
     ]);
 
     return { accessToken, refreshToken };
   }
 
-  private async saveRefreshToken(userId: string, refreshToken: string): Promise<void> {
+  private async saveRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<void> {
     await this.prisma.user.update({
       where: { id: userId },
       data: { refreshToken },
