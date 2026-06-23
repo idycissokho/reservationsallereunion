@@ -116,7 +116,7 @@ describe('AuthService', () => {
     it('retourne de nouveaux tokens', async () => {
       mockPrisma.user.update.mockResolvedValue(mockUser);
 
-      const result = await service.refresh(mockUser as any);
+      const result = await service.refresh(mockUser);
 
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');

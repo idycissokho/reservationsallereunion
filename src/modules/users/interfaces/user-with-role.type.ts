@@ -1,3 +1,5 @@
 import { Role, User } from '@prisma/client';
 
-export type UserWithRole = User & { role: Role };
+export type UserWithRole = Omit<User, 'password' | 'refreshToken'> & {
+  role: Role;
+};

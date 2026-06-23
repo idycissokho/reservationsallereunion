@@ -223,7 +223,7 @@ describe('ReservationsService', () => {
           endTime: futureEnd.toISOString(),
           roomId: 'room-1',
         },
-        mockUser as any,
+        mockUser,
       );
 
       expect(result).toBeDefined();
@@ -264,11 +264,7 @@ describe('ReservationsService', () => {
         status: ReservationStatus.CANCELLED,
       });
 
-      await service.cancel(
-        'resa-1',
-        { cancelReason: 'Reportée' },
-        mockUser as any,
-      );
+      await service.cancel('resa-1', { cancelReason: 'Reportée' }, mockUser);
 
       expect(mockPrisma.reservation.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -331,7 +327,7 @@ describe('ReservationsService', () => {
         deletedAt: new Date(),
       });
 
-      await service.remove('resa-1', mockUser as any);
+      await service.remove('resa-1', mockUser);
 
       expect(mockPrisma.reservation.update).toHaveBeenCalledWith(
         expect.objectContaining({

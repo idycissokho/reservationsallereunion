@@ -16,6 +16,7 @@ install:
   stage: install
   script:
     - npm ci
+    - npx prisma generate
   artifacts:
     paths:
       - node_modules/
