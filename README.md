@@ -1,3 +1,4 @@
+<<<<<<< README.md
 # Plateforme de Gestion et Réservation de Salles
 
 API REST backend pour la gestion et réservation de salles de réunion.
@@ -18,7 +19,7 @@ API REST backend pour la gestion et réservation de salles de réunion.
 
 ---
 
-## Prérequis
+## Prérequi
 
 - [Node.js v20+](https://nodejs.org/)
 - [PostgreSQL 14+](https://www.postgresql.org/)
@@ -231,3 +232,6 @@ Rapport de couverture disponible dans **GitLab → CI/CD → Pipelines**.
 | `feature/xxx` | Nouvelle fonctionnalité |
 | `fix/xxx` | Correction de bug |
 | `hotfix/xxx` | Correction urgente production |
+=======
+
+>>>>>>> README.md
