@@ -1,98 +1,233 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Plateforme de Gestion et Réservation de Salles
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST backend pour la gestion et réservation de salles de réunion.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Stack technique
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| Technologie | Version |
+|---|---|
+| Node.js | 20.19.1 |
+| npm | 10.8.2 |
+| NestJS | 11.x |
+| TypeScript | 5.7.x |
+| PostgreSQL | 14+ |
+| Prisma ORM | 7.8.0 |
+| Jest | 30.x |
 
-## Project setup
+---
 
-```bash
-$ npm install
-```
+## Prérequis
 
-## Compile and run the project
+- [Node.js v20+](https://nodejs.org/)
+- [PostgreSQL 14+](https://www.postgresql.org/)
+- Git
+
+---
+
+## Installation
+
+### 1. Cloner le projet
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone git@gitlab.com:endtoend3/reservation-salle-reunion.git
+cd reservation-salle-reunion
 ```
 
-## Run tests
+### 2. Installer les dépendances
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 3. Configurer les variables d'environnement
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Modifier `.env` avec vos valeurs :
 
-## Resources
+```env
+NODE_ENV=development
+PORT=3000
+API_PREFIX=api/v1
 
-Check out a few resources that may come in handy when working with NestJS:
+DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/reservation_db
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+JWT_ACCESS_SECRET=your_access_secret_here
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your_refresh_secret_here
+JWT_REFRESH_EXPIRES_IN=7d
+```
 
-## Support
+### 4. Générer le client Prisma
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npx prisma generate
+```
 
-## Stay in touch
+### 5. Créer la base de données et appliquer les migrations
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npx prisma migrate dev
+```
 
-## License
+### 6. Initialiser les données de base (rôles, permissions, admin)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+npm run seed
+```
+
+Credentials admin par défaut :
+- Email : `admin@reservation.com`
+- Mot de passe : `Admin@1234`
+
+---
+
+## Lancer l'application
+
+```bash
+# Développement (hot reload)
+npm run start:dev
+
+# Production
+npm run build
+npm run start:prod
+```
+
+L'API est disponible sur : `http://localhost:3000/api/v1`
+
+---
+
+## Documentation API (Swagger)
+
+Accessible après démarrage :
+
+```
+http://localhost:3000/api/v1/docs
+```
+
+Le jury peut tester directement : Login, Réservations, Salles.
+
+---
+
+## Collection Postman
+
+Un fichier d'import Postman est disponible à la racine :
+
+```
+reservation-api.postman_collection.json
+```
+
+Importer via : `Postman → File → Import`
+
+Les tokens sont stockés automatiquement après le login.
+
+---
+
+## Commandes utiles
+
+```bash
+# Linter
+npm run lint
+
+# Tests unitaires
+npm run test
+
+# Couverture de tests
+npm run test:cov
+
+# Build
+npm run build
+
+# Seed (initialisation des données)
+npm run seed
+
+# Prisma Studio (interface visuelle DB)
+npx prisma studio
+```
+
+---
+
+## Architecture du projet
+
+```
+src/
+├── common/
+│   ├── concurrency/        # Mutex applicatif (anti race condition)
+│   ├── decorators/         # @CurrentUser, @Roles, AppRole enum
+│   ├── filters/            # GlobalExceptionFilter
+│   ├── guards/             # JwtAccessGuard, JwtRefreshGuard, RolesGuard
+│   └── interceptors/       # ResponseInterceptor
+├── config/                 # app.config, jwt.config
+├── prisma/                 # PrismaService, PrismaModule
+└── modules/
+    ├── auth/               # Login, Refresh Token, Logout
+    ├── users/              # CRUD utilisateurs
+    ├── roles/              # CRUD rôles et permissions (RBAC)
+    ├── rooms/              # CRUD salles
+    ├── reservations/       # Réservations (toutes les règles métier)
+    └── audit/              # Journalisation des actions
+```
+
+---
+
+## Règles métier implémentées
+
+| Règle | Description |
+|---|---|
+| RG-01 | Délai minimal de 1h avant la réservation |
+| RG-02 | Salle disponible pendant toute la période |
+| RG-03 | Aucun chevauchement de réservations |
+| RG-04 | Motif obligatoire |
+| RG-05 | Seul l'auteur ou un admin peut modifier |
+| RG-06 | Re-vérification complète à chaque modification |
+| RG-07 | Seul l'auteur ou un admin peut annuler |
+| RG-08 | Traçabilité complète des annulations |
+| RG-09 | Soft delete — pas de suppression physique |
+| RG-10 | Contrôle d'accès RBAC sur toutes les opérations |
+
+---
+
+## Gestion de la concurrence
+
+Double protection contre les race conditions :
+
+- **Mutex applicatif** par `roomId` — protège sur la même instance Node.js
+- **Transaction Serializable** Prisma — protège entre instances multiples
+
+---
+
+## Rôles et permissions
+
+| Rôle | Accès |
+|---|---|
+| `ADMIN` | Accès total |
+| `MANAGER` | Gestion salles + validation/refus réservations |
+| `USER` | Consulter, créer, annuler ses propres réservations |
+
+---
+
+## CI/CD (GitLab)
+
+Pipeline automatique à chaque push :
+
+```
+install → lint → test → build
+```
+
+Rapport de couverture disponible dans **GitLab → CI/CD → Pipelines**.
+
+---
+
+## Branches Git
+
+| Branche | Usage |
+|---|---|
+| `main` | Production |
+| `develop` | Intégration |
+| `feature/xxx` | Nouvelle fonctionnalité |
+| `fix/xxx` | Correction de bug |
+| `hotfix/xxx` | Correction urgente production |
