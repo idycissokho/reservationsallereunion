@@ -11,20 +11,6 @@ import { UserWithRole } from './interfaces';
 
 const BCRYPT_ROUNDS = 12;
 
-const USER_SELECT = {
-  id: true,
-  email: true,
-  firstName: true,
-  lastName: true,
-  isActive: true,
-  roleId: true,
-  createdAt: true,
-  updatedAt: true,
-  role: true,
-  password: false,
-  refreshToken: false,
-};
-
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -47,7 +33,7 @@ export class UsersService {
       },
       include: { role: true },
       omit: { password: true, refreshToken: true },
-    }) as unknown as UserWithRole;
+    });
   }
 
   async findAll(): Promise<UserWithRole[]> {
@@ -55,7 +41,7 @@ export class UsersService {
       where: { isActive: true },
       include: { role: true },
       omit: { password: true, refreshToken: true },
-    }) as unknown as UserWithRole[];
+    });
   }
 
   async findOne(id: string): Promise<UserWithRole> {
@@ -69,7 +55,7 @@ export class UsersService {
       throw new NotFoundException('Utilisateur introuvable');
     }
 
-    return user as unknown as UserWithRole;
+    return user;
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserWithRole> {
@@ -80,7 +66,7 @@ export class UsersService {
       data: dto,
       include: { role: true },
       omit: { password: true, refreshToken: true },
-    }) as unknown as UserWithRole;
+    });
   }
 
   async changePassword(id: string, dto: ChangePasswordDto): Promise<void> {

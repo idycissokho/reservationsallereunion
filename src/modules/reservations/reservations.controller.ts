@@ -12,12 +12,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 import { JwtAccessGuard, RolesGuard } from '@common/guards';
 import { AppRole, CurrentUser, Roles } from '@common/decorators';
 import { UserWithRole } from '@modules/users/interfaces';
 import { ReservationsService } from './reservations.service';
-import { CreateReservationDto, CancelReservationDto, ReservationFilterDto } from './dto';
+import {
+  CreateReservationDto,
+  UpdateReservationDto,
+  CancelReservationDto,
+  ReservationFilterDto,
+} from './dto';
 
 @ApiTags('Reservations')
 @ApiBearerAuth()
@@ -32,13 +36,25 @@ export class ReservationsController {
   }
 
   @Get()
-  findAll(@Query() filter: ReservationFilterDto, @CurrentUser() user: UserWithRole) {
+  findAll(
+    @Query() filter: ReservationFilterDto,
+    @CurrentUser() user: UserWithRole,
+  ) {
     return this.reservationsService.findAll(filter, user);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser() user: UserWithRole) {
     return this.reservationsService.findOne(id, user);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateReservationDto,
+    @CurrentUser() user: UserWithRole,
+  ) {
+    return this.reservationsService.update(id, dto, user);
   }
 
   @Patch(':id/confirm')

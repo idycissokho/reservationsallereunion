@@ -7,11 +7,7 @@ import { JwtAccessStrategy, JwtRefreshStrategy } from './strategies';
 import { AuditModule } from '@modules/audit/audit.module';
 
 @Module({
-  imports: [
-    PassportModule,
-    JwtModule.register({}),
-    AuditModule,
-  ],
+  imports: [PassportModule, JwtModule.register({}), AuditModule],
   controllers: [AuthController],
   providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy],
 })
