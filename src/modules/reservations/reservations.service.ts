@@ -25,6 +25,10 @@ export class ReservationsService {
     private readonly mutex: ResourceMutex,
   ) {}
 
+  private isUser(user: UserWithRole): boolean {
+    return user.role.name === (AppRole.USER as string);
+  }
+
   async create(dto: CreateReservationDto, user: UserWithRole) {
     const start = new Date(dto.startTime);
     const end = new Date(dto.endTime);
@@ -112,7 +116,7 @@ export class ReservationsService {
     const where: Prisma.ReservationWhereInput = { deletedAt: null };
 
     // Un USER ne voit que ses propres réservations
-    if (user.role.name === AppRole.USER) {
+    if (this.isUser(user)) {
       where.userId = user.id;
     } else if (filter.userId) {
       where.userId = filter.userId;
@@ -147,7 +151,7 @@ export class ReservationsService {
 
     if (!reservation) throw new NotFoundException('Réservation introuvable');
 
-    if (user.role.name === AppRole.USER && reservation.userId !== user.id) {
+    if (this.isUser(user) && reservation.userId !== user.id) {
       throw new ForbiddenException('Accès refusé');
     }
 
@@ -231,7 +235,7 @@ export class ReservationsService {
 
     if (!reservation) throw new NotFoundException('Réservation introuvable');
 
-    if (user.role.name === AppRole.USER && reservation.userId !== user.id) {
+    if (this.isUser(user) && reservation.userId !== user.id) {
       throw new ForbiddenException('Accès refusé');
     }
 
@@ -331,7 +335,7 @@ export class ReservationsService {
 
     if (!reservation) throw new NotFoundException('Réservation introuvable');
 
-    if (user.role.name === AppRole.USER && reservation.userId !== user.id) {
+    if (this.isUser(user) && reservation.userId !== user.id) {
       throw new ForbiddenException('Accès refusé');
     }
 
@@ -377,7 +381,7 @@ export class ReservationsService {
 
     if (!reservation) throw new NotFoundException('Réservation introuvable');
 
-    if (user.role.name === AppRole.USER && reservation.userId !== user.id) {
+    if (this.isUser(user) && reservation.userId !== user.id) {
       throw new ForbiddenException('Accès refusé');
     }
 
